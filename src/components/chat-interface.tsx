@@ -6,12 +6,13 @@ import {
   type ChatMessageProps,
   LoadingChatMessage,
 } from '@/components/chat-message';
+import { MusnatAiLogo } from '@/components/musnat-ai-logo';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Bot, SendHorizonal, Sparkles } from 'lucide-react';
+import { Bot, SendHorizonal } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -86,7 +87,7 @@ export function ChatInterface() {
       <div className="flex-1 space-y-6 overflow-y-auto p-4 md:p-6">
         {messages.length === 0 && !isLoading ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <Sparkles className="mb-4 h-16 w-16 text-primary" />
+            <MusnatAiLogo className="mb-4 h-16 w-16 text-primary" />
             <h2 className="text-2xl font-semibold">Musnat AI Mentor</h2>
             <p className="mt-2 text-muted-foreground">
               Your personal guide for motivation and leadership.
