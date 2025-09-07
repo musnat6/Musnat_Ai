@@ -49,30 +49,28 @@ export function ChatInterface() {
   }, [messages, isLoading]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
     const userMessage: ChatMessageProps = {
       role: 'user',
       content: values.query,
     };
     
-    // Optimistically add user message.
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    // Add user message and set loading state.
+    setMessages((prev) => [...prev, userMessage]);
+    setIsLoading(true);
     form.reset();
 
     const result = await getAiResponse({
       query: values.query,
-      history: newMessages.slice(0, -1), // Send history before new message
+      history: messages, // Send full history
     });
     
-    // We already added the user message, so we just need to add the AI one (or remove user message on failure)
     if (result.error) {
       toast({
         variant: 'destructive',
         title: 'Oh no! Something went wrong.',
         description: result.error,
       });
-      // remove the user message if the call fails, and stop loading
+      // remove the user message if the call fails
       setMessages((prev) => prev.slice(0, prev.length - 1));
     } else {
       const aiMessage: ChatMessageProps = {
