@@ -14,11 +14,12 @@ export function MusnatAiLogo(props: SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M14 8V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2" />
-      <path d="M12 12h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2h2" />
-      <path d="M4 12h2a2 2 0 0 0 2-2V8a2 2 0 0 1 2-2" />
-      <path d="M18 22h-2a2 2 0 0 1-2-2v-2a2 2 0 0 0-2-2" />
-      <path d="M6 14v2a2 2 0 0 0 2 2h2" />
+      <rect x="2" y="2" width="20" height="20" rx="2" ry="2" />
+      <path d="M8 12h8" />
+      <path d="M8 16h4" />
+      <path d="M16 16h0" />
+      <circle cx="8" cy="8" r="1" />
+      <circle cx="16" cy="8" r="1" />
     </svg>
   );
 }
