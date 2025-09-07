@@ -3,9 +3,9 @@ import { ChatInterface } from '@/components/chat-interface';
 
 export default function Home() {
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-dvh bg-background">
       <Header />
-      <main className="flex-1 overflow-hidden p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 overflow-hidden p-2 sm:p-4">
         <ChatInterface />
       </main>
     </div>

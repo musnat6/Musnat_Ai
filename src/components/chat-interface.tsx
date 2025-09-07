@@ -84,7 +84,7 @@ export function ChatInterface() {
           Chat
         </h2>
       </div>
-      <div className="flex-1 space-y-6 overflow-y-auto p-4 md:p-6">
+      <div className="flex-1 space-y-6 overflow-y-auto p-4">
         {messages.length === 0 && !isLoading ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
             <Image
@@ -111,11 +111,11 @@ export function ChatInterface() {
         {isLoading && <LoadingChatMessage />}
         <div ref={messagesEndRef} />
       </div>
-      <div className="rounded-b-xl border-t bg-background/50 p-4 md:p-6">
+      <div className="rounded-b-xl border-t bg-background/50 p-2 sm:p-4">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex items-start gap-4"
+            className="flex items-start gap-2 sm:gap-4"
           >
             <FormField
               control={form.control}
