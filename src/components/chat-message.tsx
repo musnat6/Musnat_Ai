@@ -2,6 +2,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Bot, User } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export interface ChatMessageProps {
   role: 'user' | 'ai';
@@ -34,12 +36,21 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
         )}
       >
         <CardContent className="p-3">
-          <p className="text-sm leading-relaxed">{content}</p>
+          {isAi ? (
+            <ReactMarkdown
+              className="prose prose-sm dark:prose-invert max-w-none break-words"
+              remarkPlugins={[remarkGfm]}
+            >
+              {content}
+            </ReactMarkdown>
+          ) : (
+            <p className="text-sm leading-relaxed">{content}</p>
+          )}
         </CardContent>
       </Card>
       {!isAi && (
         <Avatar className="h-8 w-8 border">
-          <AvatarFallback className='bg-secondary'>
+          <AvatarFallback className="bg-secondary">
             <User className="h-5 w-5" />
           </AvatarFallback>
         </Avatar>
