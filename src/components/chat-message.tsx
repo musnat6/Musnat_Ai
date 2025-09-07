@@ -20,7 +20,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
     >
       {isAi && (
         <Avatar className="h-8 w-8 border">
-          <AvatarFallback>
+          <AvatarFallback className="bg-secondary">
             <Bot className="h-5 w-5" />
           </AvatarFallback>
         </Avatar>
@@ -29,7 +29,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
         className={cn(
           'max-w-xl rounded-2xl',
           isAi
-            ? 'rounded-tl-none bg-muted/50'
+            ? 'rounded-tl-none bg-muted'
             : 'rounded-tr-none bg-primary text-primary-foreground'
         )}
       >
@@ -39,7 +39,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
       </Card>
       {!isAi && (
         <Avatar className="h-8 w-8 border">
-          <AvatarFallback>
+          <AvatarFallback className='bg-secondary'>
             <User className="h-5 w-5" />
           </AvatarFallback>
         </Avatar>
@@ -52,11 +52,11 @@ export function LoadingChatMessage() {
   return (
     <div className="flex items-start justify-start gap-4">
       <Avatar className="h-8 w-8 border">
-        <AvatarFallback>
+        <AvatarFallback className="bg-secondary">
           <Bot className="h-5 w-5" />
         </AvatarFallback>
       </Avatar>
-      <Card className="max-w-xl rounded-2xl rounded-tl-none bg-muted/50">
+      <Card className="max-w-xl rounded-2xl rounded-tl-none bg-muted">
         <CardContent className="p-3">
           <div className="flex items-center gap-1.5">
             <span className="h-2 w-2 animate-pulse rounded-full bg-foreground/50 delay-0" />

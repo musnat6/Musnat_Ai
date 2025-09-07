@@ -76,7 +76,7 @@ export function ChatInterface() {
   }
 
   return (
-    <div className="flex h-full flex-col rounded-xl border bg-card shadow-sm">
+    <div className="flex h-full flex-col rounded-xl border bg-card shadow-2xl shadow-primary/10">
       <div className="flex items-center justify-between border-b p-4">
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <Bot className="h-5 w-5" />
