@@ -20,13 +20,6 @@ const formSchema = z.object({
   query: z.string().min(1, 'Message cannot be empty.'),
 });
 
-const starterPrompts = [
-  'Give me a quote about leadership.',
-  'Tell me a fun fact about cats.',
-  "What is the summary of 'Artificial intelligence' on Wikipedia?",
-  'Give me some advice for a new manager.',
-];
-
 export function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessageProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -82,12 +75,6 @@ export function ChatInterface() {
     setIsLoading(false);
   }
 
-  const handleStarterPrompt = (prompt: string) => {
-    form.setValue('query', prompt);
-    // Directly call onSubmit without waiting for a form event
-    onSubmit({ query: prompt });
-  };
-
   return (
     <div className="flex h-full flex-col rounded-xl border bg-card shadow-sm">
       <div className="flex items-center justify-between border-b p-4">
@@ -104,18 +91,6 @@ export function ChatInterface() {
             <p className="mt-2 text-muted-foreground">
               Your personal guide for motivation and leadership.
             </p>
-            <div className="mt-8 grid w-full max-w-2xl grid-cols-1 gap-4 md:grid-cols-2">
-              {starterPrompts.map((prompt, i) => (
-                <Button
-                  key={i}
-                  variant="outline"
-                  className="h-auto justify-start py-3 text-left"
-                  onClick={() => handleStarterPrompt(prompt)}
-                >
-                  {prompt}
-                </Button>
-              ))}
-            </div>
           </div>
         ) : (
           messages.map((message, index) => (
@@ -142,7 +117,6 @@ export function ChatInterface() {
                 <FormItem className="flex-1">
                   <FormControl>
                     <Textarea
-                      placeholder="Ask for advice, a quote, or a fun fact..."
                       className="resize-none"
                       rows={1}
                       onKeyDown={(e) => {
