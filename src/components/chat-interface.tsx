@@ -90,7 +90,7 @@ export function ChatInterface() {
             <MusnatAiLogo className="mb-4 h-16 w-16 text-primary" />
             <h2 className="text-2xl font-semibold">Musnat AI Mentor</h2>
             <p className="mt-2 text-muted-foreground">
-              Your personal guide for motivation and leadership.
+              Built by Musnat
             </p>
           </div>
         ) : (
