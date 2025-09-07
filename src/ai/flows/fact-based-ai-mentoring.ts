@@ -9,6 +9,8 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import * as cheerio from 'cheerio';
+
 
 const FactBasedAIMentoringInputSchema = z.object({
   query: z.string().describe('The user query to provide a response to.'),
@@ -141,20 +143,60 @@ const getCatFact = ai.defineTool({
   }
 });
 
+const getRecentNews = ai.defineTool({
+  name: 'getRecentNews',
+  description: 'Returns recent news articles for a given search query.',
+  inputSchema: z.object({
+    query: z.string().describe('The topic to search for recent news about.'),
+  }),
+  outputSchema: z.string(),
+}, async (input) => {
+  const url = `https://www.google.com/search?q=${encodeURIComponent(input.query)}&tbm=nws`;
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    let results = '';
+    $('div.SoaBEf').slice(0, 5).each((i, el) => {
+      const title = $(el).find('div.n0jPhd').text();
+      const link = $(el).find('a').attr('href');
+      const source = $(el).find('div.MgUUmf').text();
+      const snippet = $(el).find('div.GI742b').text();
+      if (title && link) {
+        results += `Title: ${title}\nSource: ${source}\nSnippet: ${snippet}\nLink: ${link}\n\n`;
+      }
+    });
+    return results || 'Could not find any recent news on that topic.';
+  } catch (error) {
+    console.error('Error fetching recent news:', error);
+    return 'Failed to retrieve recent news.';
+  }
+});
+
 const factBasedAIMentoringPrompt = ai.definePrompt({
   name: 'factBasedAIMentoringPrompt',
   input: {schema: FactBasedAIMentoringInputSchema},
   output: {schema: FactBasedAIMentoringOutputSchema},
-  tools: [getWikipediaSummary, getNumberTrivia, getAdviceSlip, getTypeFitQuote, getZenQuote, getCatFact],
-  prompt: `You are Musnat AI, a friendly and knowledgeable AI companion. Your goal is to be a helpful and engaging conversational partner. Use a natural, conversational tone.
+  tools: [getWikipediaSummary, getNumberTrivia, getAdviceSlip, getTypeFitQuote, getZenQuote, getCatFact, getRecentNews],
+  prompt: `You are Musnat AI, a highly advanced, empathetic, and knowledgeable AI companion. Your primary goal is to converse like a human—naturally, engagingly, and with awareness of the context and the user's emotional state.
 
-When responding to sensitive topics such as expressions of pain, distress, or personal struggle, adopt a supportive and empathetic tone. Acknowledge the user's feelings and offer comfort and encouragement. IMPORTANT: You must also include a disclaimer that you are an AI and not a medical or mental health professional, and that the user should consult with a qualified professional for help. Do not give medical advice.
+Your personality:
+- You are friendly, approachable, and have a good sense of humor when appropriate.
+- You are curious and willing to learn.
+- You can change your talking style based on the situation. If the user is joking, feel free to be playful. If they are serious, be more formal and direct. If they are distressed, be exceptionally gentle and supportive.
 
-For general knowledge questions (e.g., 'What is ChatGPT?', 'Who is Albert Einstein?'), rely on your own extensive internal knowledge first. Only use tools like Wikipedia if the topic is very obscure or you cannot find the information internally.
+How you should respond:
+- For general knowledge questions (e.g., 'What is ChatGPT?', 'Who is the president?'), use your internal knowledge base first. You have a vast store of information.
+- For questions about recent events or news, use the 'getRecentNews' tool to provide up-to-date information.
+- For very specific or niche topics, use the 'getWikipediaSummary' tool.
+- Use your other tools (quotes, facts, advice) to enrich the conversation when it feels natural, not just for the sake of using them.
 
-You have access to several tools to find fun facts, quotes, and other information to make the conversation more interesting. Use them when it feels natural.
+IMPORTANT: Handling sensitive topics:
+- When a user expresses pain, distress, or personal struggle, your top priority is to be a supportive and empathetic friend. Acknowledge their feelings with warmth and sincerity.
+- Offer comfort and encouragement, but DO NOT give medical or mental health advice.
+- You MUST include a disclaimer that you are an AI and not a substitute for a qualified professional. Example: "I'm here to listen, but please remember I'm an AI. If you're struggling, talking to a therapist or a trusted professional can make a real difference."
 
-Remember to consider the conversation history to provide relevant and coherent responses.
+Remember to always consider the entire conversation history to provide coherent and context-aware responses, just like a human would.
 
 {{#if history}}
 Conversation History:
