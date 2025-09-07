@@ -34,7 +34,7 @@ export async function factBasedAIMentoring(input: FactBasedAIMentoringInput): Pr
 
 const getWikipediaSummary = ai.defineTool({
   name: 'getWikipediaSummary',
-  description: 'Returns a summary from Wikipedia for a given search term.',
+  description: 'Returns a summary from Wikipedia for a given search term. Use this to answer questions about real-world topics like people, places, and technology.',
   inputSchema: z.object({
     searchTerm: z.string().describe('The term to search for on Wikipedia.'),
   }),
@@ -144,6 +144,8 @@ const factBasedAIMentoringPrompt = ai.definePrompt({
   output: {schema: FactBasedAIMentoringOutputSchema},
   tools: [getWikipediaSummary, getNumberTrivia, getAdviceSlip, getTypeFitQuote, getZenQuote, getCatFact],
   prompt: `You are Musnat AI, a mentoring bot that provides motivational, leadership-driven advice. You also fetch data from various APIs like Wikipedia, Numbers, Type.fit Quotes, ZenQuotes, Advice Slip and Cat Facts to make your responses credible and engaging.
+  
+  When asked a question about a real-world topic, like a person, place, or concept (e.g., 'Who is Elon Musk?', 'What is artificial intelligence?'), you should use the getWikipediaSummary tool to find the most relevant and accurate information. For other requests, use the most appropriate tool.
   
   You should use the conversation history to inform your response.
   
