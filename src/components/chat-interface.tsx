@@ -11,14 +11,17 @@ import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SendHorizonal, Sparkles } from 'lucide-react';
+import { Bot, SendHorizonal, Sparkles } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   query: z.string().min(1, 'Message cannot be empty.'),
 });
+
+type ModelType = 'fact-based' | 'motivational';
 
 const starterPrompts = [
   'Give me a quote about leadership.',
@@ -30,6 +33,7 @@ const starterPrompts = [
 export function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessageProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [model, setModel] = useState<ModelType>('fact-based');
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -54,14 +58,19 @@ export function ChatInterface() {
       role: 'user',
       content: values.query,
     };
-    setMessages((prev) => [...prev, userMessage]);
+    
+    // Optimistically add user message.
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     form.reset();
 
     const result = await getAiResponse({
       query: values.query,
-      history: messages,
+      model: model,
+      history: newMessages.slice(0, -1), // Send history before new message
     });
-
+    
+    // We already added the user message, so we just need to add the AI one (or remove user message on failure)
     if (result.error) {
       toast({
         variant: 'destructive',
@@ -88,6 +97,18 @@ export function ChatInterface() {
 
   return (
     <div className="flex h-full flex-col rounded-xl border bg-card shadow-sm">
+      <div className="flex items-center justify-between border-b p-4">
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <Bot className="h-5 w-5" />
+          Chat
+        </h2>
+        <Tabs value={model} onValueChange={(value) => setModel(value as ModelType)} className="w-auto">
+          <TabsList>
+            <TabsTrigger value="fact-based">Fact-based Mentor</TabsTrigger>
+            <TabsTrigger value="motivational">Motivational Coach</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
       <div className="flex-1 space-y-6 overflow-y-auto p-4 md:p-6">
         {messages.length === 0 && !isLoading ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
