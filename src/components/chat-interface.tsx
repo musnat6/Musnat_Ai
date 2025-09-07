@@ -15,13 +15,10 @@ import { Bot, SendHorizonal, Sparkles } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   query: z.string().min(1, 'Message cannot be empty.'),
 });
-
-type ModelType = 'fact-based' | 'motivational';
 
 const starterPrompts = [
   'Give me a quote about leadership.',
@@ -33,7 +30,6 @@ const starterPrompts = [
 export function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessageProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [model, setModel] = useState<ModelType>('fact-based');
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -66,7 +62,6 @@ export function ChatInterface() {
 
     const result = await getAiResponse({
       query: values.query,
-      model: model,
       history: newMessages.slice(0, -1), // Send history before new message
     });
     
@@ -102,12 +97,6 @@ export function ChatInterface() {
           <Bot className="h-5 w-5" />
           Chat
         </h2>
-        <Tabs value={model} onValueChange={(value) => setModel(value as ModelType)} className="w-auto">
-          <TabsList>
-            <TabsTrigger value="fact-based">Fact-based Mentor</TabsTrigger>
-            <TabsTrigger value="motivational">Motivational Coach</TabsTrigger>
-          </TabsList>
-        </Tabs>
       </div>
       <div className="flex-1 space-y-6 overflow-y-auto p-4 md:p-6">
         {messages.length === 0 && !isLoading ? (
