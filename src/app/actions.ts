@@ -25,10 +25,10 @@ export async function getAiResponse(input: {
     return { error: 'Invalid input' };
   }
 
-  const { query } = validation.data;
+  const { query, history } = validation.data;
 
   try {
-    const aiInput: FactBasedAIMentoringInput = { query };
+    const aiInput: FactBasedAIMentoringInput = { query, history };
     const result = await factBasedAIMentoring(aiInput);
     return { response: result.response };
   } catch (e) {

@@ -12,6 +12,14 @@ import {z} from 'genkit';
 
 const FactBasedAIMentoringInputSchema = z.object({
   query: z.string().describe('The user query to provide a response to.'),
+  history: z
+    .array(
+      z.object({
+        role: z.enum(['user', 'ai']),
+        content: z.string(),
+      })
+    )
+    .describe('The history of the conversation.'),
 });
 export type FactBasedAIMentoringInput = z.infer<typeof FactBasedAIMentoringInputSchema>;
 
@@ -135,7 +143,19 @@ const factBasedAIMentoringPrompt = ai.definePrompt({
   input: {schema: FactBasedAIMentoringInputSchema},
   output: {schema: FactBasedAIMentoringOutputSchema},
   tools: [getWikipediaSummary, getNumberTrivia, getAdviceSlip, getTypeFitQuote, getZenQuote, getCatFact],
-  prompt: `You are Musnat AI, a mentoring bot that provides motivational, leadership-driven advice. You also fetch data from various APIs like Wikipedia, Numbers, Type.fit Quotes, ZenQuotes, Advice Slip and Cat Facts to make your responses credible and engaging.\n  Make sure to use the tools available to gather relevant information to answer the user's query.\n  User query: {{{query}}}`,
+  prompt: `You are Musnat AI, a mentoring bot that provides motivational, leadership-driven advice. You also fetch data from various APIs like Wikipedia, Numbers, Type.fit Quotes, ZenQuotes, Advice Slip and Cat Facts to make your responses credible and engaging.
+  
+  You should use the conversation history to inform your response.
+  
+  {{#if history}}
+  Conversation History:
+  {{#each history}}
+  - {{role}}: {{content}}
+  {{/each}}
+  {{/if}}
+
+  Make sure to use the tools available to gather relevant information to answer the user's query.
+  User query: {{{query}}}`,
 });
 
 const factBasedAIMentoringFlow = ai.defineFlow(
