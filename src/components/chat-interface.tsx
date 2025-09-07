@@ -117,6 +117,7 @@ export function ChatInterface() {
                 <FormItem className="flex-1">
                   <FormControl>
                     <Textarea
+                      placeholder="Ask anything to Musnat"
                       className="resize-none"
                       rows={1}
                       onKeyDown={(e) => {
