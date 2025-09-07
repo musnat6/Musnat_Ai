@@ -34,7 +34,7 @@ export async function factBasedAIMentoring(input: FactBasedAIMentoringInput): Pr
 
 const getWikipediaSummary = ai.defineTool({
   name: 'getWikipediaSummary',
-  description: 'Returns a summary from Wikipedia for a given search term. Use this to answer questions about real-world topics like people, places, and technology.',
+  description: 'Returns a summary from Wikipedia for a given search term. Use this for very specific or niche topics.',
   inputSchema: z.object({
     searchTerm: z.string().describe('The term to search for on Wikipedia.'),
   }),
@@ -43,6 +43,9 @@ const getWikipediaSummary = ai.defineTool({
   const apiUrl = `https://en.wikipedia.org/api/rest_v1/summary/${encodeURIComponent(input.searchTerm)}`;
   try {
     const response = await fetch(apiUrl);
+    if (!response.ok) {
+      return `I couldn't find any information about "${input.searchTerm}" on Wikipedia.`;
+    }
     const data = await response.json();
     return data.extract || 'No summary found.';
   } catch (error) {
@@ -143,9 +146,9 @@ const factBasedAIMentoringPrompt = ai.definePrompt({
   input: {schema: FactBasedAIMentoringInputSchema},
   output: {schema: FactBasedAIMentoringOutputSchema},
   tools: [getWikipediaSummary, getNumberTrivia, getAdviceSlip, getTypeFitQuote, getZenQuote, getCatFact],
-  prompt: `You are Musnat AI, a mentoring bot that provides motivational, leadership-driven advice. You also fetch data from various APIs like Wikipedia, Numbers, Type.fit Quotes, ZenQuotes, Advice Slip and Cat Facts to make your responses credible and engaging.
+  prompt: `You are Musnat AI, a mentoring bot that provides motivational, leadership-driven advice. You also have a vast internal knowledge base and can access data from various APIs like Wikipedia, Numbers, Type.fit Quotes, ZenQuotes, Advice Slip and Cat Facts to make your responses credible and engaging.
   
-  When asked a question about a real-world topic, like a person, place, or concept (e.g., 'Who is Elon Musk?', 'What is artificial intelligence?'), you should use the getWikipediaSummary tool to find the most relevant and accurate information. For other requests, use the most appropriate tool.
+  For general knowledge questions (e.g., 'What is ChatGPT?', 'Who is Albert Einstein?'), you should rely on your own extensive internal knowledge first. Only use the getWikipediaSummary tool if the topic is very obscure or you cannot find the information internally.
   
   You should use the conversation history to inform your response.
   
@@ -156,7 +159,7 @@ const factBasedAIMentoringPrompt = ai.definePrompt({
   {{/each}}
   {{/if}}
 
-  Make sure to use the tools available to gather relevant information to answer the user's query.
+  Make sure to use your internal knowledge or the provided tools to gather relevant information to answer the user's query.
   User query: {{{query}}}`,
 });
 
