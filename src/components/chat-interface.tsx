@@ -6,7 +6,6 @@ import {
   type ChatMessageProps,
   LoadingChatMessage,
 } from '@/components/chat-message';
-import { MusnatAiLogo } from '@/components/musnat-ai-logo';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,6 +15,7 @@ import { Bot, SendHorizonal } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import Image from 'next/image';
 
 const formSchema = z.object({
   query: z.string().min(1, 'Message cannot be empty.'),
@@ -87,7 +87,13 @@ export function ChatInterface() {
       <div className="flex-1 space-y-6 overflow-y-auto p-4 md:p-6">
         {messages.length === 0 && !isLoading ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <MusnatAiLogo className="mb-4 h-16 w-16 text-primary" />
+            <Image
+              src="https://ucarecdn.com/aaa12892-c8ca-4224-b768-46c05616eafe/-/preview/1000x1000/"
+              alt="Musnat AI Logo"
+              width={64}
+              height={64}
+              className="mb-4 h-16 w-16"
+            />
             <h2 className="text-2xl font-semibold">Musnat AI Mentor</h2>
             <p className="mt-2 text-muted-foreground">
               Your personal guide for motivation and leadership.
